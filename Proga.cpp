@@ -18,9 +18,9 @@ bool ComparisonWithZero(double n);
 
 
 const double SMALL_CONST = 0.000001;
-const long long INF = -1;
 
-enum solves {
+enum Solves {
+    INF = -1,
     ZERO_SOLVE,
     ONE_SOLVE,
     TWO_SOLVE,
@@ -36,15 +36,15 @@ int main(void){
     if (!GetRightCoefficients(&a,&b,&c))
         printf("The program cannot be executed");
     else {
-        int roots_count = solvesquare(a,b,c,&x1,&x2);//возвращает количество корней
-        GetAnswer(&x1,&x2,roots_count);  //выводит корни, в зависимости от ситуации
+        int roots_count = SolveSquare(a,b,c,&x1,&x2);
+        GetAnswer(&x1,&x2,roots_count);
     }
 
     return 0;
 
 
 }
-int solvesquare(double a, double b, double c,
+int SolveSquare(double a, double b, double c,
                     double* x1, double* x2){
 
     assert(x1 != NULL);
@@ -83,6 +83,8 @@ void GetAnswer(double* x1, double* x2,
                 break;
         case INF: printf("Infinity roots");
                        break;
+        default: assert(0);
+                 break;
         }
 
 }
@@ -106,17 +108,19 @@ int SolveSquareEquation(double a, double b, double c,
         assert(x1!=NULL);
         assert(x2!=NULL);
 
-        double d=0;
+        double d = 0;
         switch(SolveCountDependingDisc(&d,a,b,c)){
             case ZERO_SOLVE: return ZERO_SOLVE;
                     break;
-            case ONE_SOLVE:*x1 = *x2 = -b/(2*a);
+            case ONE_SOLVE:*x1 = *x2 = -b / ( 2 * a );
                     return ONE_SOLVE;
                     break;
-            case TWO_SOLVE: *x1 = (-b + sqrt(d))/(2*a);
-                    *x2 = (-b - sqrt(d))/(2*a);
+            case TWO_SOLVE: *x1 = (-b + sqrt(d)) / (2 * a);
+                    *x2 = (-b - sqrt(d)) / (2 * a);
                     return TWO_SOLVE;
                     break;
+            default: assert(0);
+                     break;
         }
 
 }
@@ -126,10 +130,10 @@ int SolveCountDependingDisc(double* d,
 
     assert(d != NULL);
 
-    *d = b*b - 4*a*c;
+    *d = b * b - 4 * a * c;
     if  (ComparisonWithZero(*d))
         return ONE_SOLVE;
-    else if (*d<0)
+    else if (*d < 0)
         return ZERO_SOLVE;
     else
         return TWO_SOLVE;
