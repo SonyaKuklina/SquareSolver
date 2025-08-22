@@ -19,12 +19,16 @@ bool ComparisonWithZero(double n);
 
 const double SMALL_CONST = 0.000001;
 const long long INF = -1;
-const int ZERO_SOLVE = 0;
-const int ONE_SOLVE = 1;
-const int TWO_SOLVE = 2;
+
+enum solves {
+    ZERO_SOLVE,
+    ONE_SOLVE,
+    TWO_SOLVE,
+};
 
 
 int main(void){
+
 
     double a = 0, b = 0, c = 0;
     double x1 = 0, x2 = 0;
@@ -65,7 +69,7 @@ bool GetRightCoefficients(double* a, double* b, double* c){
 }
 
 void GetAnswer(double* x1, double* x2,
-                        int roots_count){
+                         int roots_count){
 
         assert(x1!=NULL);
         assert(x2!=NULL);
@@ -88,10 +92,10 @@ int SolveLinerEquation(double b, double c,
         assert(x1 != NULL);
 
         if (ComparisonWithZero(b)){
-            return (ComparisonWithZero(c)) ? INF : 0;
+            return (ComparisonWithZero(c)) ? INF : ZERO_SOLVE;
         } else{
              *x1 = -c/b;
-             return 1;
+             return ONE_SOLVE;
         }
 
 }
@@ -104,14 +108,14 @@ int SolveSquareEquation(double a, double b, double c,
 
         double d=0;
         switch(SolveCountDependingDisc(&d,a,b,c)){
-            case ZERO_SOLVE: return 0;
+            case ZERO_SOLVE: return ZERO_SOLVE;
                     break;
             case ONE_SOLVE:*x1 = *x2 = -b/(2*a);
-                    return 1;
+                    return ONE_SOLVE;
                     break;
             case TWO_SOLVE: *x1 = (-b + sqrt(d))/(2*a);
                     *x2 = (-b - sqrt(d))/(2*a);
-                    return 2;
+                    return TWO_SOLVE;
                     break;
         }
 
@@ -124,11 +128,11 @@ int SolveCountDependingDisc(double* d,
 
     *d = b*b - 4*a*c;
     if  (ComparisonWithZero(*d))
-        return 1;
+        return ONE_SOLVE;
     else if (*d<0)
-        return 0;
+        return ZERO_SOLVE;
     else
-        return 2;
+        return TWO_SOLVE;
 
 }
 
