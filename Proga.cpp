@@ -7,23 +7,30 @@
 #include <math.h>
 #include <ctype.h> //семейство функций для работы с символами
 #include <stdbool.h>//bool - псевдоним типа _Bool, введены символические константы true/false
+
 int solvesquare(double a, double b, double c, double* x1, double* x2);
+
 int main(void){
+
     const double CONST = 0.000001;
     const int INFINTY = -1;
+
     double a = 0, b = 0, c = 0;
     double x1 = 0, x2 = 0;
-    printf("Введите коэффициенты: \n");
+
+    printf("Please, enter cofficients: \n");
     scanf("%lg %lg %lg", &a, &b, &c);
+
     int roots_count = solvesquare(a,b,c,&x1,&x2);//возвращает количество корней
+
     switch (roots_count){
-        case 0: printf("Нет действительных корней\n");
+        case 0: printf("No real roots\n");
                 break;
-        case 1: printf("Ответ: x = %lg",x1);
+        case 1: printf("Answer: x = %lg",x1);
                 break;
-        case 2: printf("Ответ: x1 = %lg, x2 = %lg",x1,x2);
+        case 2: printf("Answer: x1 = %lg, x2 = %lg",x1,x2);
                 break;
-        case INFINITY: printf("Квадратоное уравнение имеет бесконечное количество решений");
+        case INFINITY: printf("Infinity roots");
                        break;
     }
     return 0;
@@ -31,6 +38,7 @@ int main(void){
 }
 int solvesquare(double a, double b, double c,
                     double* x1, double* x2){
+
     if (fabs(a - 0) <= CONST){
         if (fabs(b - 0)<=CONST){
             return (c == 0) ? INFINITY : 0;
