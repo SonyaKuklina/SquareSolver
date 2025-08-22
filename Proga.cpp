@@ -1,23 +1,13 @@
+///brief Решение квадратного уравнения
 #include <stdio.h>
 #include <TXLib.h>
 #include <stdint.h>
-#include <string.h> //для строк
-#include <limits.h>//содержит информацию об ограничениях размеров целочисленных типов
+#include <string.h>
+#include <limits.h>
 #include <float.h>
 #include <math.h>
-#include <ctype.h> //семейство функций для работы с символами
-#include <stdbool.h>//bool - псевдоним типа _Bool, введены символические константы true/false
-
-int solvesquare(double a, double b, double c, double* x1, double* x2);
-bool GetRightCoefficients(double* a, double* b, double* c);
-void GetAnswer(double* x1, double* x2, int roots_count);
-int SolveLinerEquation(double b, double c, double* x1);
-int SolveSquareEquation(double a, double b, double c, double* x1, double* x2);
-int SolveCountDependingDisc(double* d, double a, double b, double c);
-bool ComparisonWithZero(double n);
-
-
-const double SMALL_CONST = 0.000001;
+#include <ctype.h>
+#include <stdbool.h>
 
 enum Solves {
     INF = -1,
@@ -26,6 +16,57 @@ enum Solves {
     TWO_SOLVE,
 };
 
+/*!SolveSquare
+  /param [in] a-коэффициент
+  /param [in] b-коэффициент
+  /param [in] c-коэффициент
+  /param [out] x1-первый возможный корень уравнения
+  /param [out] x2-второй возможный корень уравнения
+  \return Вызывает функции SolveLinerEquation (при a == 0) и SolveSquareEquation (при a != 0)
+*/
+int SolveSquare(double a, double b, double c, double* x1, double* x2);
+
+/*!  GetRightCoefficients
+  \return Корректность введённых коэффициентов
+*/
+void GetRightCoefficients(double* a, double* b, double* c);
+/*!GetAnswer
+  /param[out] x1 - первый корень уравнения
+  /param[out] x2 - второй корень уравнения
+  /param[in] roots_count - количество корней
+  \return Выводит окончательный ответ
+*/
+void GetAnswer(double* x1, double* x2, int roots_count);
+/*!  SolveLinerEquation
+  /param[in] b-коэффициент
+  /param[in] c-коэффициент
+  /param[out] x1-единственный корень
+  \return  Количесвто корней (1, 0 или INF), при a = 0
+*/
+Solves SolveLinerEquation(double b, double c, double* x1);
+/*!  SolveSquareEquation
+  /param [in] a-коэффициент
+  /param [in] b-коэффициент
+  /param [in] c-коэффициент
+  /param [out] x1-первый возможный корень уравнения
+  /param [out] x2-второй возможный корень уравнения
+  \return Количество корней уравнения, передает полученные значения в переменные x1 и x2
+*/
+Solves SolveSquareEquation(double a, double b, double c, double* x1, double* x2);
+/*!  SolveCountDependingDisc
+  /param [in] a-коэффициент
+  /param [in] b-коэффициент
+  /param [in] c-коэффициент
+  /param [out] d - переменная для хранения значения дискриминанта
+  \return Количество решений уравнения, в зависимости от значения дискриминанта
+*/
+Solves SolveCountDependingDisc(double* d, double a, double b, double c);
+bool ComparisonWithZero(double n);
+void ClearBuffer(void);
+
+
+const double SMALL_CONST = 0.000001;
+
 
 int main(void){
 
@@ -33,12 +74,11 @@ int main(void){
     double a = 0, b = 0, c = 0;
     double x1 = 0, x2 = 0;
 
-    if (!GetRightCoefficients(&a,&b,&c))
-        printf("The program cannot be executed");
-    else {
-        int roots_count = SolveSquare(a,b,c,&x1,&x2);
-        GetAnswer(&x1,&x2,roots_count);
-    }
+    GetRightCoefficients(&a, &b, &c);
+
+    int roots_count = SolveSquare(a,b,c,&x1,&x2);
+    GetAnswer(&x1,&x2,roots_count);
+
 
     return 0;
 
@@ -57,22 +97,25 @@ int SolveSquare(double a, double b, double c,
 
 }
 
-bool GetRightCoefficients(double* a, double* b, double* c){
+void GetRightCoefficients(double* a, double* b, double* c){
 
-    assert(a!=NULL);
-    assert(b!=NULL);
-    assert(c!=NULL);
+    assert(a != NULL);
+    assert(b != NULL);
+    assert(c != NULL);
 
-    printf("Please, enter cofficients: \n");
-    return (scanf("%lg %lg %lg",a,b,c) == 3);
+    printf("Please, enter coefficients: \n");
+    while (scanf("%lg %lg %lg",a,b,c) != 3){
+        ClearBuffer();
+        printf("Please try entering again: \n");
+    }
 
 }
 
 void GetAnswer(double* x1, double* x2,
                          int roots_count){
 
-        assert(x1!=NULL);
-        assert(x2!=NULL);
+        assert(x1 != NULL);
+        assert(x2 != NULL);
 
         switch (roots_count){
         case ZERO_SOLVE: printf("No real roots\n");
@@ -88,7 +131,7 @@ void GetAnswer(double* x1, double* x2,
         }
 
 }
-int SolveLinerEquation(double b, double c,
+Solves SolveLinerEquation(double b, double c,
                             double* x1){
 
         assert(x1 != NULL);
@@ -102,11 +145,11 @@ int SolveLinerEquation(double b, double c,
 
 }
 
-int SolveSquareEquation(double a, double b, double c,
+Solves SolveSquareEquation(double a, double b, double c,
                                 double* x1, double* x2){
 
-        assert(x1!=NULL);
-        assert(x2!=NULL);
+        assert(x1 != NULL);
+        assert(x2 != NULL);
 
         double d = 0;
         switch(SolveCountDependingDisc(&d,a,b,c)){
@@ -125,7 +168,7 @@ int SolveSquareEquation(double a, double b, double c,
 
 }
 
-int SolveCountDependingDisc(double* d,
+Solves SolveCountDependingDisc(double* d,
                         double a, double b, double c ){
 
     assert(d != NULL);
@@ -142,6 +185,13 @@ int SolveCountDependingDisc(double* d,
 
 bool ComparisonWithZero(double n){
     return (fabs(n)<=SMALL_CONST);
+}
+void ClearBuffer(void) {
+    int c;
+    c = getchar();
+    while ((c != '\n') && (c != EOF)){
+        c = getchar();
+    }
 }
 
 
