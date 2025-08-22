@@ -7,22 +7,49 @@
 #include <math.h>
 #include <ctype.h> //семейство функций для работы с символами
 #include <stdbool.h>//bool - псевдоним типа _Bool, введены символические константы true/false
-
-long long fact(int n);
+int solvesquare(double a, double b, double c, double* x1, double* x2);
 int main(void){
-      printf("Введите число (для завершения введите любой другой символ): \n");
-      int num;
-      while (scanf("%d",&num) == 1){
-            printf("Факториал числа %d = %u\n", num, fact(num));
-            printf("Введите следующее число: \n");
-      }
+    const double CONST = 0.000001;
+    const int INFINTY = -1;
+    double a = 0, b = 0, c = 0;
+    double x1 = 0, x2 = 0;
+    printf("Введите коэффициенты: \n");
+    scanf("%lg %lg %lg", &a, &b, &c);
+    int roots_count = solvesquare(a,b,c,&x1,&x2);//возвращает количество корней
+    switch (roots_count){
+        case 0: printf("Нет действительных корней\n");
+                break;
+        case 1: printf("Ответ: x = %lg",x1);
+                break;
+        case 2: printf("Ответ: x1 = %lg, x2 = %lg",x1,x2);
+                break;
+        case INFINITY: printf("Квадратоное уравнение имеет бесконечное количество решений");
+                       break;
+    }
+    return 0;
+
 }
-long long fact(int n){
-    long long ans = 1;
-    if (n>0)
-        ans = n*fact(n-1);
-    else
-        ans = 1;
-    return ans;
+int solvesquare(double a, double b, double c,
+                    double* x1, double* x2){
+    if (fabs(a - 0) <= CONST){
+        if (fabs(b - 0)<=CONST){
+            return (c == 0) ? INFINITY : 0;
+        } else{
+            *x1 = -c/b;
+             return 1;
+        }
+    } else{
+        double disc = b*b - 4*a*c;
+        if (fabs(disc - 0)<=CONST){
+            *x1 = *x2 = -b/(2*a);
+             return 1;
+        } else if (disc < 0){
+             return 0;
+        } else{
+            *x1 = (-b + sqrt(disc))/(2*a);
+            *x2 = (-b - sqrt(disc))/(2*a);
+            return 2;
+        }
+    }
 }
 
