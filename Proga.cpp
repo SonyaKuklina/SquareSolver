@@ -10,10 +10,10 @@
 
 int solvesquare(double a, double b, double c, double* x1, double* x2);
 
-int main(void){
+const double SMALL_CONST = 0.000001;
+const long long INF = -1;
 
-    const double CONST = 0.000001;
-    const int INFINTY = -1;
+int main(void){
 
     double a = 0, b = 0, c = 0;
     double x1 = 0, x2 = 0;
@@ -30,7 +30,7 @@ int main(void){
                 break;
         case 2: printf("Answer: x1 = %lg, x2 = %lg",x1,x2);
                 break;
-        case INFINITY: printf("Infinity roots");
+        case INF: printf("Infinity roots");
                        break;
     }
     return 0;
@@ -39,16 +39,16 @@ int main(void){
 int solvesquare(double a, double b, double c,
                     double* x1, double* x2){
 
-    if (fabs(a - 0) <= CONST){
-        if (fabs(b - 0)<=CONST){
-            return (c == 0) ? INFINITY : 0;
+    if (fabs(a - 0) <= SMALL_CONST){
+        if (fabs(b - 0)<=SMALL_CONST){
+            return (c == 0) ? INF : 0;
         } else{
             *x1 = -c/b;
              return 1;
         }
     } else{
         double disc = b*b - 4*a*c;
-        if (fabs(disc - 0)<=CONST){
+        if (fabs(disc - 0)<=SMALL_CONST){
             *x1 = *x2 = -b/(2*a);
              return 1;
         } else if (disc < 0){
